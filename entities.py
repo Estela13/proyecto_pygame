@@ -1,30 +1,42 @@
+import random
 import pygame as pg
 
-class Asteroids:
-    def __init__(self, center_x, center_y, radio=10, color=(255, 255, 0)):
-        self.center_x = center_x
-        self.center_y = center_y
-        self.radio = radio
-        self.color = color
 
-        self.vx = 0
-        self.vy = 0
+class Asteroids:
+    
+    def __init__(self, size):
+        asteroid50 = pg.image.load("images/asteroid50.png")
+        asteroid100 = pg.image.load("images/asteroid100.png")
+        asteroid150 = pg.image.load("images/asteroid100.png")
+        self.size = size
+        if self.size == 1:
+            self.image = asteroid50
+        elif self.size == 2:
+            self.image = asteroid100
+        else:
+            self.image = asteroid150
+        self.w = self.image.get_width()
+        self.h= self.image.get_height()
+        self.center_x = random.randint(800, 1500)
+        self.center_y = random.randrange(600 - self.w)
         
     
-    def speed(self, vx, vy):
-
+    def speed(self, vx):
         self.vx = vx
-        self.vy = vy
-    
-    def move(self):
-
-        self.center_x += self.vx
+   
 
     def draw(self, screen):
-        pg.draw.circle(screen, self.color, (self.center_x, self.center_y), self.radio)
+        screen.blit(self.image, (self.center_x, self.center_y))
+    
+    def move(self):
+        self.center_x += self.vx
+        if self.center_x < 0 - self.w:
+            for a in range(5):
+                self.center_x = random.randint(800, 830)
+                self.center_y = random.randrange(600 - self.w)
+            
 
 class Spaceship:
-    image = pg.image.load("images/spaceRocket.png")
     def __init__(self):
         image = pg.image.load("images/spaceRocket.png")
         self.img = image
@@ -34,24 +46,23 @@ class Spaceship:
         self.h= self.img.get_height()
 
 
-    def speed(self, vx, vy):
-        self.vx = vx
+    def speed(self, vy):
         self.vy = vy
 
-        
-    
+   
     def move(self, key_up, key_down, y_max=600):
         key_state = pg.key.get_pressed()
         if key_state[key_up]:
             self.center_y -= self.vy 
         if self.center_y < self.h // 2:
             self.center_y = self.h // 2
-
-
+      
+       
         if key_state[key_down]:
             self.center_y += self.vy
         if self.center_y > y_max - self.h // 2:
             self.center_y = y_max - self.h // 2
+        
         
 
     def draw(self, screen):

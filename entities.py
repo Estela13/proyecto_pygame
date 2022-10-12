@@ -11,42 +11,48 @@ class Asteroids:
         self.vy = 0
         
     
-    def velocidad(self, vx, vy):
+    def speed(self, vx, vy):
 
         self.vx = vx
         self.vy = vy
     
-    def mover(self):
+    def move(self):
 
         self.center_x += self.vx
 
-    def dibujar(self, pantalla):
-        pg.draw.circle(pantalla, self.color, (self.center_x, self.center_y), self.radio)
+    def draw(self, screen):
+        pg.draw.circle(screen, self.color, (self.center_x, self.center_y), self.radio)
 
-class Nave:
-    def __init__(self, center_x=20, center_y=240, w=25, h=60, color=(255, 0, 255)):
-        self.center_x = center_x
-        self.center_y = center_y
-        self.w = w
-        self.h= h
-        self.color = color
+class Spaceship:
+    image = pg.image.load("images/spaceRocket.png")
+    def __init__(self):
+        image = pg.image.load("images/spaceRocket.png")
+        self.img = image
+        self.center_x = 60
+        self.center_y = 240
+        self.w = self.img.get_width()
+        self.h= self.img.get_height()
 
-    def velocidad(self, vx, vy):
+
+    def speed(self, vx, vy):
         self.vx = vx
         self.vy = vy
+
+        
     
-    def mover(self, tecla_arriba, tecla_abajo, y_max=600):
-        estado_teclas = pg.key.get_pressed()
-        if estado_teclas[tecla_arriba]:
-            self.center_y -= self.vy
+    def move(self, key_up, key_down, y_max=600):
+        key_state = pg.key.get_pressed()
+        if key_state[key_up]:
+            self.center_y -= self.vy 
         if self.center_y < self.h // 2:
             self.center_y = self.h // 2
 
 
-        if estado_teclas[tecla_abajo]:
+        if key_state[key_down]:
             self.center_y += self.vy
         if self.center_y > y_max - self.h // 2:
             self.center_y = y_max - self.h // 2
+        
 
-    def dibujar(self, pantalla):
-        pg.draw.rect(pantalla, self.color, (self.center_x - self.w//2, self.center_y - self.h//2, self.w, self.h))
+    def draw(self, screen):
+        screen.blit(self.img, (self.center_x - self.w//2, self.center_y - self.h//2, self.w, self.h))

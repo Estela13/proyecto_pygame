@@ -24,7 +24,6 @@ class Asteroids:
     
     def speed(self, vx):
         self.vx = vx
-   
     
     def move(self, x_max, y_max):
         self.center_x += self.vx
@@ -32,6 +31,8 @@ class Asteroids:
             for a in range(5):
                 self.center_x = random.randint(x_max, x_max + 30)
                 self.center_y = random.randrange(y_max - self.w)
+        
+        return "point" 
                 
 
 
@@ -40,8 +41,9 @@ class Asteroids:
         
         
     def itTouches(self, spaceship):
-        if self.left <= spaceship.right and self.down >= spaceship.up and self.up <= spaceship.down and self.left >= spaceship.left:
+        if self.left <= spaceship.right and self.down >= spaceship.up  and self.up >= spaceship.down and self.left >= spaceship.left:
             pass
+            
 
     @property
     def left(self):

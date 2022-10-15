@@ -1,4 +1,4 @@
-from screens import Game
+from the_quest.screens import Game
 
 play = Game()
 play.mainloop()

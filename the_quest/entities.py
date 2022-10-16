@@ -8,7 +8,7 @@ class Asteroids(pg.sprite.Sprite):
     
     def __init__(self, size, x_max = 800, y_max = 600):
         super().__init__()
-        asteroid50 = pg.image.load("the_quest/images/asteroid50.png")#pg.image.load("the_quest/images/asteroid50:2.png"),pg.image.load("the_quest/images/asteroid50:3.png"),pg.image.load("the_quest/images/asteroid50:4.png")].convert()
+        asteroid50 = pg.transform.scale(pg.image.load("the_quest/images/meteorito.png"),(50,50))
         asteroid100 = pg.image.load("the_quest/images/asteroid100.png").convert()
         asteroid150 = pg.image.load("the_quest/images/asteroid150.png").convert()
         self.size = size
@@ -37,6 +37,7 @@ class Asteroids(pg.sprite.Sprite):
             for a in range(5):
                 self.center_x = random.randint(x_max, x_max + 30)
                 self.center_y = random.randrange(y_max - self.w)
+    
           
 
 
@@ -65,7 +66,7 @@ class Asteroids(pg.sprite.Sprite):
 class Spaceship(pg.sprite.Sprite):
     def __init__(self, center_x=60, vy = 2, y_max = 600):
         super().__init__()
-        image = pg.image.load("the_quest/images/spaceRocket.png")
+        image = pg.transform.scale(pg.image.load("the_quest/images/blueships1.png"),(100,80))
         self.center_x = center_x
         self.img = image
         self.center_y = y_max // 2

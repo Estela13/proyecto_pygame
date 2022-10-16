@@ -1,5 +1,5 @@
-from the_quest.screens import Game
+from controller import Controller
+from the_quest.screens import Game, Menu, Records
 
-play = Game()
-play.mainloop()
-
+game = Menu()
+game.mainloop()

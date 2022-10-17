@@ -9,8 +9,8 @@ class Asteroids(pg.sprite.Sprite):
     def __init__(self, size, x_max = 800, y_max = 600):
         super().__init__()
         asteroid50 = pg.transform.scale(pg.image.load("the_quest/images/meteorito.png"),(50,50))
-        asteroid100 = pg.image.load("the_quest/images/asteroid100.png").convert()
-        asteroid150 = pg.image.load("the_quest/images/asteroid150.png").convert()
+        asteroid100 = pg.transform.scale(pg.image.load("the_quest/images/meteorito.png"),(100,100))
+        asteroid150 = pg.transform.scale(pg.image.load("the_quest/images/meteorito.png"),(150,150))
         self.size = size
         if self.size == 1:
             self.image = asteroid50
@@ -21,10 +21,8 @@ class Asteroids(pg.sprite.Sprite):
         self.w = self.image.get_width()
         self.h = self.image.get_height()
         self.rect = self.image.get_rect()
-
         self.center_x = random.randint(x_max, x_max + 600)
         self.center_y = random.randrange(y_max - self.w)
-
         self.vx = -5
         
     
@@ -38,16 +36,9 @@ class Asteroids(pg.sprite.Sprite):
                 self.center_x = random.randint(x_max, x_max + 30)
                 self.center_y = random.randrange(y_max - self.w)
     
-          
-
 
     def draw(self, screen):
         screen.blit(self.image, (self.center_x, self.center_y))
-        
-        
-    def itTouches(self, spaceship):
-        if self.left <= spaceship.right and self.down >= spaceship.up  and self.up >= spaceship.down and self.left >= spaceship.left:
-            pass
         
 
     @property
@@ -83,7 +74,6 @@ class Spaceship(pg.sprite.Sprite):
             self.center_y -= self.vy
         if self.center_y < self.h // 2:
             self.center_y = self.h // 2
-      
        
         if key_state[key_down]:
             self.center_y += self.vy
@@ -109,5 +99,5 @@ class Spaceship(pg.sprite.Sprite):
 
     @property
     def down(self):
-        return self.center_y + self.h // 2
+        return (self.center_y + self.h // 2) - 50
     

@@ -10,7 +10,7 @@ class Game:
         self.main_screen = pg.display.set_mode((screen_height, screen_width))
         pg.display.set_caption("THE QUEST") 
         self.background = pg.image.load("the_quest/images/71ZRmajgshL._AC_SL1500_%20Edited Edited.jpeg").convert()
-        self.background_endlevel = pg.image.load("the_quest/images/James-Webb-Peers-Into-TRAPPIST-1-a-Star-System-Full-of.jpeg").convert()
+        #self.background_endlevel = pg.image.load("the_quest/images/James-Webb-Peers-Into-TRAPPIST-1-a-Star-System-Full-of.jpeg").convert()
         self.background_width = self.background.get_width()
         self.clock = pg.time.Clock()
         self.timer = Max_time
@@ -22,17 +22,26 @@ class Game:
         self.pointsMarker = pg.font.Font("the_quest/fonts/Silkscreen-Regular.ttf", 25)
         self.spaceship = Spaceship()
         self.game_over = False
+        self.level = 1
         
-    def mainloop(self):
+    def mainloop(self, level):
         self.FPS = 50
         self.asteroidsCount = 0
         self.asteroids = []
+        self.level = level
         
-        for i in range(5):
-            asteroid = Asteroids(1)
-            asteroid.speed(-5)
-            self.asteroids.append(asteroid)
-            i += 1
+        if self.level == 1:
+            for i in range(5):
+                asteroid = Asteroids(1)
+                asteroid.speed(-5)
+                self.asteroids.append(asteroid)
+                i += 1
+        elif self.level == 2:
+            for i in range(7):
+                asteroid = Asteroids(2)
+                asteroid.speed(-5)
+                self.asteroids.append(asteroid)
+                i += 1
        
         while not self.game_over:
             game_time = self.clock.tick(self.FPS)
@@ -73,7 +82,10 @@ class Game:
                     self.lives -= 1
                     self.asteroids.pop(self.asteroids.index(asteroid))
                     if self.lives == 2 or self.lives == 1:
-                        asteroid = Asteroids(1)
+                        if self.level == 1:
+                            asteroid = Asteroids(1)
+                        elif self.level == 2:
+                            asteroid = Asteroids(2)
                         asteroid.speed(-5)
                         self.asteroids.append(asteroid)
                     if self.lives == 0:
@@ -93,8 +105,15 @@ class Game:
                         if self.spaceship.center_x >= 500:
                             self.asteroidsCount = + 10
                             self.spaceship.center_x = 500
-                            game = EndLevel()
-                            game.mainloop()
+                            p2 = self.pointsMarker.render("PRESS ENTER TO NEXT LEVEL: ", True, (255, 255, 255))
+                            self.main_screen.blit(p2, (10, 300))
+                            if event.type == pg.KEYDOWN:
+                                if event.key == pg.K_ESCAPE:
+                                    gameagain = Game()
+                                    gameagain.mainloop(2)
+                                if event.key == pg.K_RETURN:
+                                    pass
+
                             #fin de nivel
                 
             
@@ -114,8 +133,6 @@ class Game:
     def level2(Game):
         pass
         
-
-
         pg.quit()
 
 
@@ -138,7 +155,7 @@ class Menu:
                 if event.type == pg.KEYDOWN:
                     if event.key == pg.K_RETURN:
                         game = Game()
-                        game.mainloop()
+                        game.mainloop(1)
 
 
             self.main_screen.blit(self.background, (0, 0))

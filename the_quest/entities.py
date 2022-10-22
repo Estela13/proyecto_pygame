@@ -10,8 +10,8 @@ class Asteroids(pg.sprite.Sprite):
     def __init__(self, size):
         super().__init__()
         asteroid50 = pg.transform.scale(pg.image.load("the_quest/images/meteorito.png"),(50,50))
-        asteroid100 = pg.transform.scale(pg.image.load("the_quest/images/meteorito.png"),(100,100))
-        asteroid150 = pg.transform.scale(pg.image.load("the_quest/images/meteorito.png"),(150,150))
+        asteroid100 = pg.transform.scale(pg.image.load("the_quest/images/meteorito.png"),(70,70))
+        asteroid150 = pg.transform.scale(pg.image.load("the_quest/images/meteorito.png"),(100,100))
         self.size = size
         if self.size == 1:
             self.image = asteroid50
@@ -54,16 +54,19 @@ class Spaceship(pg.sprite.Sprite):
     def __init__(self, center_x=60, vy = 2):
         super().__init__()
         self._image = pg.transform.scale(pg.image.load("the_quest/images/blueships1.png"),(100,80))
+        self.landing = pg.transform.scale(pg.image.load("the_quest/images/blueships1.png"),(60,30))
         self.center_x = center_x
         self.img = self._image
-        self.flipped = pg.transform.flip(self.img, True, False)
+        self.flipped = pg.transform.rotate(self.img, 180)
         self.center_y = y_max // 2
         self.vy = vy
         self.w = self.img.get_width()
         self.h= self.img.get_height()
         self.lives = 3
+        posArco = 660,600
         self.rect = self.img.get_rect()
         self.rect.topleft = [self.center_x,self.center_y]
+
 
     def move(self, key_up, key_down):
         key_state = pg.key.get_pressed()
@@ -76,6 +79,9 @@ class Spaceship(pg.sprite.Sprite):
             self.center_y += self.vy
         if self.center_y > y_max - self.h // 2:
             self.center_y = y_max - self.h // 2
+    def dontmove(self):
+        self.center_x = 500
+        self.center_y = self.center_y
 
     def draw(self, screen):
       screen.blit(self.img, (self.center_x - self.w//2, self.center_y - self.h//2, self.w, self.h))  

@@ -178,10 +178,11 @@ class Menu():
                 if event.type == pg.MOUSEBUTTONDOWN:
                     if play_button.checkForInput(menu_mouse):
                         self.music.stop()
-                        juego = Game()
-                        juego.mainloop(1)
+                        game = Game()
+                        game.mainloop(1)
                     if instrutions_button.checkForInput(menu_mouse):
-                        pass
+                        intro = Instructions()
+                        intro.mainloop()
                     if quit_button.checkForInput(menu_mouse):
                         pg.quit()
                         sys.exit()
@@ -215,18 +216,23 @@ class Records:
             self.main_screen.blit(records, (200, 500))
             pg.display.flip()
     
-class EndLevel:
+class Instructions:
     def __init__(self):
         self.main_screen = pg.display.set_mode((screen_height, screen_width))
-        pg.display.set_caption("END")
+        pg.display.set_caption("INSTRUCTIONS")
         self.clock = pg.time.Clock()
-        self.background = pg.image.load("the_quest/images/71ZRmajgshL._AC_SL1500_%20Edited Edited.jpeg").convert()
+        self.background = pg.transform.scale(pg.image.load("the_quest/images/op2.jpeg"),(800,600))
         self.startFont =  pg.font.Font("the_quest/fonts/Silkscreen-Regular.ttf", 30)
-        self.spaceship2 = Spaceship(500, 100) 
+        self.rect = pg.transform.scale(pg.image.load("the_quest/images/Rect.png"),(700,400))
     def mainloop(self):
         game_over = False
        
         while not game_over:
+            self.main_screen.blit(self.background, (0,0))
+            
+            text = self.startFont.render("Instructions", True, "#b68f40")
+            text_rect = text.get_rect(center=(400, 100))
+
             for event in pg.event.get():
                 if event.type == pg.QUIT:
                     game_over = True
@@ -234,11 +240,10 @@ class EndLevel:
                     if event.key == pg.K_RETURN:
                         game = Game()
                         game.mainloop()
+            self.main_screen.blit(text, text_rect)
+            self.main_screen.blit(self.rect, (50,150))
 
-            self.main_screen.blit(self.background, (-500, 0))
-            records = self.startFont.render("Press Enter to continue", True, (255, 255, 255))
-            self.main_screen.blit(records, (10, 10))
-            self.spaceship2.draw(self.main_screen)
+           
             pg.display.flip()
     
 class Game_over(Game):

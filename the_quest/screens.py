@@ -21,7 +21,7 @@ class Game:
         self.x = 0
         self.y = 0
         self.livesMarker = pg.image.load("the_quest/images/heart.png")
-        self.warning = pg.transform.scale(pg.image.load("the_quest/images/virus warning.png"), (35,35)).convert()
+        self.warning = pg.transform.scale(pg.image.load("the_quest/images/virus warning.png"), (35,35))
         self.timerMarker = pg.font.Font("the_quest/fonts/Silkscreen-Regular.ttf", 20)
         self.pointsMarker = pg.font.Font("the_quest/fonts/Silkscreen-Regular.ttf", 25)
         self.spaceship = Spaceship()
@@ -40,14 +40,14 @@ class Game:
         if self.level == 1:
             for i in range(5):
                 asteroid = Asteroids(random.randint(1,2))
-                asteroid.speed(-5)
+                asteroid.speed(random.randint(3,6))
                 self.asteroids.append(asteroid)
                 i += 1
         elif self.level == 2:
             self.background = self.bg2
             for i in range(4):
                 asteroid = Asteroids(random.randint(1,3))
-                asteroid.speed(-6)
+                asteroid.speed(random.randint(5,8))
                 self.asteroids.append(asteroid)
                 i += 1
     
@@ -59,7 +59,8 @@ class Game:
 
             for event in pg.event.get():
                 if event.type == pg.QUIT:
-                    self.game_over = True
+                    pg.quit()
+                    sys.exit()
         
             self.main_screen.blit(self.background, (self.x, self.y))
     
@@ -90,14 +91,15 @@ class Game:
                         
                 if self.timer <= 0:
                     self.timer = 0
-                    self.end_music.play(-1)
+                    
                     asteroid.vx *= -1
-                    asteroid.speed(8)
+                    asteroid.speed(-9)
                     self.x -= 1
                     if self.x <= -500:
+                        self.spaceship.vy = 0
+                        self.spaceship.img = self.spaceship.flipped
                         self.main_screen.blit(self.background, (-500, 0))
                         self.spaceship.center_x += 1
-                        self.spaceship.img = self.spaceship.flipped
                         if self.spaceship.center_x >= 500:
                             self.spaceship.center_x = 500   
                         p2 = self.pointsMarker.render("PRESS ENTER TO NEXT LEVEL ", True, (255, 255, 0))
@@ -112,6 +114,8 @@ class Game:
                                 game = Game()
                                 game.mainloop(1)
                             #fin de nivel
+                    
+                
            
             self.spaceship.draw(self.main_screen)
             self.spaceship.move(pg.K_UP, pg.K_DOWN)
@@ -142,22 +146,23 @@ class Menu():
         pg.display.set_caption("MENU")
         self.clock = pg.time.Clock()
         self.background = pg.transform.scale(pg.image.load("the_quest/images/op2.jpeg"),(800,600))
-        self.menuFont = pg.font.Font("the_quest/fonts/Silkscreen-Regular.ttf", 90)
+        self.titleFont= pg.font.Font("the_quest/fonts/Silkscreen-Regular.ttf", 90)
+        self.menuFont = pg.font.Font("the_quest/fonts/Silkscreen-Regular.ttf", 50)
         self.startFont =  pg.font.Font("the_quest/fonts/PermanentMarker-Regular.ttf", 40)
         self.music = pg.mixer.Sound("the_quest/sound/00 intro_0.ogg")
         
     def mainloop(self):
         game_over = False
-
        
         while not game_over:
             self.music.play(-1)
             self.music.set_volume(0.1)
             self.main_screen.blit(self.background, (0,0))
             menu_mouse = pg.mouse.get_pos()
-
-            menu_text = self.menuFont.render("MAIN MENU", True, "#b68f40")
-            menu_rect = menu_text.get_rect(center=(380, 100))
+            title_text = self.titleFont.render("THE QUEST", True, "#b68f40")
+            self.main_screen.blit(title_text, (125, 10))
+            menu_text = self.menuFont.render("MAIN MENU", True, "#DEB887")
+            menu_rect = menu_text.get_rect(center=(390, 150))
             play_button = Button(pg.transform.scale(pg.image.load("the_quest/images/Rect.png"),(250,100)), pos=(400, 250), 
                             text_input="PLAY", font=self.startFont, base_color="#d7fcd4", hovering_color="White")
             instrutions_button = Button(pg.transform.scale(pg.image.load("the_quest/images/Rect.png"),(350,100)), pos=(400, 370), 
@@ -205,7 +210,8 @@ class Records:
         while not game_over:
             for event in pg.event.get():
                 if event.type == pg.QUIT:
-                    game_over = True
+                    pg.quit()
+                    sys.exit()
                 if event.type == pg.KEYDOWN:
                     if event.key == pg.K_RETURN:
                         game_over = True
@@ -224,48 +230,108 @@ class Instructions:
         self.background = pg.transform.scale(pg.image.load("the_quest/images/op2.jpeg"),(800,600))
         self.startFont =  pg.font.Font("the_quest/fonts/Silkscreen-Regular.ttf", 30)
         self.rect = pg.transform.scale(pg.image.load("the_quest/images/Rect.png"),(700,400))
+        self.textFont = pg.font.Font("the_quest/fonts/PTSans-Regular.ttf", 17)
     def mainloop(self):
         game_over = False
+        pg.font.init()
        
         while not game_over:
             self.main_screen.blit(self.background, (0,0))
             
             text = self.startFont.render("Instructions", True, "#b68f40")
             text_rect = text.get_rect(center=(400, 100))
+            text_instru = self.textFont.render("The Quest game. You are in outta space searching for new planets to conqueer.", True, (0,0,0))
+            text_instru2 = self.textFont.render("You've got 3 lives in each level, if you collide with an asteroid you'll lose one of those lives.", True, (0,0,0))
+            text_instru_ = self.textFont.render("You have to survive 30 seconds on each level without losing your 3 lives.", True, (0,0,0))
+            text_instru_2 = self.textFont.render("To move your spaceship you'll use the key arrow UP and DOWN.", True, (0,0,0))
+            text_instru_4 = self.textFont.render("The more asteroids you pass without colliding the bigger score you'll get.", True, (0,0,0))
+            text_instru4 = self.textFont.render("At the end of the level you will land in a new planet you've discovered.", True, (0,0,0))
+            text_instru5 = self.textFont.render("If you lose your 3 lives it will be GAME OVER. The level will restart automatically.", True, (0,0,0))
 
             for event in pg.event.get():
                 if event.type == pg.QUIT:
-                    game_over = True
+                    pg.quit()
+                    sys.exit()
                 if event.type == pg.KEYDOWN:
                     if event.key == pg.K_RETURN:
                         game = Game()
                         game.mainloop()
             self.main_screen.blit(text, text_rect)
             self.main_screen.blit(self.rect, (50,150))
+            self.main_screen.blit(text_instru, (70, 200))
+            self.main_screen.blit(text_instru2, (70, 235))
+            self.main_screen.blit(text_instru_, (70, 265))
+            self.main_screen.blit(text_instru_2, (70, 295))
+            self.main_screen.blit(text_instru_4, (70, 325))
+            self.main_screen.blit(text_instru4, (70, 355))
+            self.main_screen.blit(text_instru5, (70, 385))
 
            
             pg.display.flip()
     
-class Game_over(Game):
-
+class EndLevel:
     def __init__(self):
         self.main_screen = pg.display.set_mode((screen_height, screen_width))
-        pg.display.set_caption("GAME OVER")
-
+        pg.display.set_caption("END")
+        self.clock = pg.time.Clock()
+        self.background = pg.image.load("the_quest/images/backgroundplanet.jpeg").convert()
+        self.startFont =  pg.font.Font("the_quest/fonts/Silkscreen-Regular.ttf", 30)
+        self.spaceship = Spaceship() 
+        self.angle = 0
+        self.img0 = pg.transform.scale(pg.image.load("the_quest/images/blueships1.png"),(100,80))
+        self.img1 = pg.transform.rotate(self.img0 , self.angle) 
+        self.rect0 = self.img0.get_rect()
+        center_x = 60
+        center_y = 600 // 2
+        self.rect0.center = center_x , center_y
+        self.runing = False
+        self.x = 0
+        self.y = 0
+        self.end_music = pg.mixer.Sound("the_quest/sound/01 game-game_0.ogg")
+        self.pointsMarker = pg.font.Font("the_quest/fonts/Silkscreen-Regular.ttf", 25)
     def mainloop(self):
-        while not self.game_over:
+        game_over = False
+       
+        while not game_over:
             for event in pg.event.get():
                 if event.type == pg.QUIT:
-                    self.game_over = True
+                    pg.quit()
+                    sys.exit()
+            
+            self.end_music.play(-1)
+            self.end_music.set_volume(0.1)
+            self.x -= 1
+            if self.x <= -500:
+                self.main_screen.blit(self.background, (-500, 0)) 
+                self.runing = True   
+                self.spaceship.center_x += 1
+                if self.spaceship.center_x >= 500:
+                    self.spaceship.center_x = 500  
+                 
+                p2 = self.pointsMarker.render("PRESS ENTER TO NEXT LEVEL ", True, (255, 255, 0))
+                self.main_screen.blit(p2, (200, 300))
                 if event.type == pg.KEYDOWN:
                     if event.key == pg.K_RETURN:
+                        self.end_music.stop()
+                        gameagain = Game()
+                        gameagain.mainloop(2)
+                    if event.key == pg.K_ESCAPE:
+                        self.end_music.stop()
                         game = Game()
-                    if self.level == 1:
                         game.mainloop(1)
-                    if self.level == 2:
-                        game.mainloop(2)
+            if self.runing:        
+                    self.angle += 1
+                    if self.angle % 180 == 0:
+                        self.runing = False
+            img1 = pg.transform.rotate(self.img0 , self.angle) 
+            rect1 = img1.get_rect()
+            rect1.center = self.rect0.center
+            
+            
+            self.main_screen.blit(self.background, (self.x, self.y))
+            self.main_screen.blit(img1,rect1)
+            
+            
+                    
 
-        self.main_screen.blit(self.background, (-500, 0))
-        p2 = self.pointsMarker.render("PRESS ENTER PLAY AGAIN: ", True, (255, 255, 255))
-        self.main_screen.blit(p2, (10, 300))
-        pg.display.flip()
+            pg.display.flip()

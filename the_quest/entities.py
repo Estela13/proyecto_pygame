@@ -27,6 +27,7 @@ class Asteroids(pg.sprite.Sprite):
 
     def speed(self, vx):
         self.vx = vx
+        self.vx *= -1
     
     def update(self):
         self.center_x += self.vx
@@ -56,17 +57,18 @@ class Spaceship(pg.sprite.Sprite):
         self._image = pg.transform.scale(pg.image.load("the_quest/images/blueships1.png"),(100,80))
         self.landing = pg.transform.scale(pg.image.load("the_quest/images/blueships1.png"),(60,30))
         self.center_x = center_x
-        self.img = self._image
+        self.angle = 0
+        self.img = pg.transform.rotate(self._image, self.angle)
         self.flipped = pg.transform.rotate(self.img, 180)
         self.center_y = y_max // 2
         self.vy = vy
         self.w = self.img.get_width()
         self.h= self.img.get_height()
         self.lives = 3
-        posArco = 660,600
         self.rect = self.img.get_rect()
-        self.rect.topleft = [self.center_x,self.center_y]
-
+        self.rect_center = (self.w // 2, self.h // 2)
+        self.rotating = False
+       
 
     def move(self, key_up, key_down):
         key_state = pg.key.get_pressed()
@@ -79,12 +81,17 @@ class Spaceship(pg.sprite.Sprite):
             self.center_y += self.vy
         if self.center_y > y_max - self.h // 2:
             self.center_y = y_max - self.h // 2
-    def dontmove(self):
-        self.center_x = 500
-        self.center_y = self.center_y
-
+ 
     def draw(self, screen):
-      screen.blit(self.img, (self.center_x - self.w//2, self.center_y - self.h//2, self.w, self.h))  
+        screen.blit(self.img, ((self.center_x - self.w // 2), self.center_y - self.h // 2))
+        if self.rotating:
+            self.angle += 1
+            rect1 = self.img.get_rect()
+            rect1.center = self.rect.center
+            if self.angle == 180:
+                self.angle = 180
+
+        
 
     @property
     def right(self):

@@ -181,8 +181,8 @@ class Menu():
                     pg.quit()
                     sys.exit()
                 if event.type == pg.MOUSEBUTTONDOWN:
+                    self.music.stop()
                     if play_button.checkForInput(menu_mouse):
-                        self.music.stop()
                         game = Game()
                         game.mainloop(1)
                     if instrutions_button.checkForInput(menu_mouse):
@@ -231,13 +231,25 @@ class Instructions:
         self.startFont =  pg.font.Font("the_quest/fonts/Silkscreen-Regular.ttf", 30)
         self.rect = pg.transform.scale(pg.image.load("the_quest/images/Rect.png"),(700,400))
         self.textFont = pg.font.Font("the_quest/fonts/PTSans-Regular.ttf", 17)
+        self.music = pg.mixer.Sound("the_quest/sound/00 intro_0.ogg")
     def mainloop(self):
         game_over = False
         pg.font.init()
        
         while not game_over:
+            self.music.play(-1)
+            self.music.set_volume(0.1)
             self.main_screen.blit(self.background, (0,0))
             
+            menu_mouse = pg.mouse.get_pos()
+            
+            play_button = Button(pg.transform.scale(pg.image.load("the_quest/images/Rect.png"),(100,80)), pos=(200, 100), 
+                        text_input="PLAY", font=self.startFont, base_color="#d7fcd4", hovering_color="White")
+            back_button = Button(pg.transform.scale(pg.image.load("the_quest/images/Rect.png"),(100,80)), pos=(80, 100), 
+                            text_input="BACK", font=self.startFont, base_color="#d7fcd4", hovering_color="White")
+            for button in [play_button, back_button]:
+                button.changeColor(menu_mouse)
+                button.update(self.main_screen)
             text = self.startFont.render("Instructions", True, "#b68f40")
             text_rect = text.get_rect(center=(400, 100))
             text_instru = self.textFont.render("The Quest game. You are in outta space searching for new planets to conqueer.", True, (0,0,0))
@@ -252,10 +264,14 @@ class Instructions:
                 if event.type == pg.QUIT:
                     pg.quit()
                     sys.exit()
-                if event.type == pg.KEYDOWN:
-                    if event.key == pg.K_RETURN:
+                if event.type == pg.MOUSEBUTTONDOWN:
+                    self.music.stop()
+                    if back_button.checkForInput(menu_mouse):
+                        menu = Menu()
+                        menu.mainloop()
+                    if play_button.checkForInput(menu_mouse):
                         game = Game()
-                        game.mainloop()
+                        game.mainloop(1)
             self.main_screen.blit(text, text_rect)
             self.main_screen.blit(self.rect, (50,150))
             self.main_screen.blit(text_instru, (70, 200))

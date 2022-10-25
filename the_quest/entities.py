@@ -1,7 +1,5 @@
-from curses import KEY_DOWN, KEY_UP
 import random
 import pygame as pg
-import math
 from the_quest import y_max, x_max
 
 NEGRO = (0,0,0)
@@ -54,21 +52,22 @@ class Asteroids(pg.sprite.Sprite):
 class Spaceship(pg.sprite.Sprite):
     def __init__(self, center_x=60, vy = 2):
         super().__init__()
-        self._image = pg.transform.scale(pg.image.load("the_quest/images/blueships1.png"),(100,80))
+        self._image = pg.transform.scale(pg.image.load("the_quest/images/blueships1.png"),(80,70))
         self.landing = pg.transform.scale(pg.image.load("the_quest/images/blueships1.png"),(60,30))
         self.center_x = center_x
-        self.angle = 0
-        self.img = pg.transform.rotate(self._image, self.angle)
-        self.flipped = pg.transform.rotate(self.img, 180)
+        self.img = self._image
+        self.flipped = pg.transform.rotate(self.img, 0)
         self.center_y = y_max // 2
         self.vy = vy
         self.w = self.img.get_width()
         self.h= self.img.get_height()
         self.lives = 3
+        self.angle = 0
         self.rect = self.img.get_rect()
         self.rect_center = (self.w // 2, self.h // 2)
         self.rotating = False
        
+
 
     def move(self, key_up, key_down):
         key_state = pg.key.get_pressed()
@@ -86,7 +85,8 @@ class Spaceship(pg.sprite.Sprite):
         screen.blit(self.img, ((self.center_x - self.w // 2), self.center_y - self.h // 2))
         if self.rotating:
             self.angle += 1
-            rect1 = self.img.get_rect()
+            img1 = pg.transform.rotate(self.img , self.angle) 
+            rect1 = img1.get_rect()
             rect1.center = self.rect.center
             if self.angle == 180:
                 self.angle = 180
@@ -133,7 +133,6 @@ class Explosion(pg.sprite.Sprite):
 			self.index += 1
 			self.image = self.images[self.index]
 
-		#if the animation is complete, reset animation index
 		if self.index >= len(self.images) - 1 and self.counter >= explosion_speed:
 			self.kill()
 

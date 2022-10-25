@@ -1,7 +1,7 @@
 
 import sqlite3
 import pygame as pg
-from the_quest import Max_time, screen_height, screen_width
+from the_quest import Max_time_game, Max_time_screen, screen_height, screen_width
 from the_quest.entities import Asteroids, Spaceship, Explosion
 import random
 import sys
@@ -17,7 +17,7 @@ class Game:
         self.bg2 = pg.image.load("the_quest/images/wp3028472 Edited.jpeg").convert()
         self.background_width = self.background.get_width()
         self.clock = pg.time.Clock()
-        self.timer = Max_time
+        self.timer = Max_time_game
         self.lives = 3
         self.x = 0
         self.y = 0
@@ -92,30 +92,30 @@ class Game:
       
                     if self.lives == 2 or self.lives == 1:
                         if self.level == 1:
-                            asteroid = Asteroids(1)
+                            asteroid = Asteroids(random.randint(1,2))
                         elif self.level == 2:
-                            asteroid = Asteroids(2)
+                            asteroid = Asteroids(random.randint(1,3))
                         asteroid.speed(random.randint(5,8))
                         self.asteroids.append(asteroid)
                     if self.lives == 0:
                         if level == 1:
-                            gameover = Game_over(1)
+                            gameover = Game_over(1, self.asteroidsCount)
                         if level == 2:
                             gameover = Game_over(2)
                         gameover.mainloop()
                         
                 if self.timer <= 0:
                     colliding = False
+                    self.spaceship.center_y = 300
                     asteroid.center_x += -15
                     self.timer = 0
-                    self.spaceship.center_y = 300
                     self.x -= 0.10
                     if self.x <= -60:
                         end = End()
                         if level == 1:
-                            end.mainloop(1)
+                            end.mainloop(1, self.asteroidsCount)
                         if level == 2:
-                            end.mainloop(2)
+                            end.mainloop(2, self.asteroidsCount)
 
             self.spaceship.draw(self.main_screen)
             self.spaceship.move(pg.K_UP, pg.K_DOWN)
@@ -298,17 +298,20 @@ class End():
         self.center_y = 300
         self.rect0.center = (self.center_x, self.center_y)
         self.text1 = pg.font.Font("the_quest/fonts/Silkscreen-Regular.ttf", 25)
+        self.pointsMarker = pg.font.Font("the_quest/fonts/Silkscreen-Regular.ttf", 25)
+        self.timer = Max_time_screen
 
-
-    def mainloop(self, level):
+    def mainloop(self, level, score):
         clock = pg.time.Clock() 
         runing = True
         angle = 0
         run = True
         self.level = level
+        self.score = score        
 
         while run:
-            clock.tick(50)
+            screen_time = clock.tick(50)
+            self.timer -= screen_time
 
             if level == 1:
                 self.screen.blit(self.background, (self.x, 0))
@@ -325,7 +328,9 @@ class End():
                 self.screen.blit(self.bg2, (self.x, 0))
                 if self.center_x >= 395:
                     self.center_x = 395
+                    p4 = self.text1.render("YOU'VE WON!", True, (255, 255, 255))
                     p3 = self.text1.render("PRESS ENTER TO RECORDS SCREEN", True, (255, 255, 0))
+                    self.screen.blit(p4, (250, 200))
                     self.screen.blit(p3, (160, 500))
                     if event.type == pg.KEYDOWN:
                         if event.key == pg.K_RETURN:
@@ -344,7 +349,13 @@ class End():
                 angle += 1
                 if angle % 180 == 0:
                     runing = False
+                        
+            if self.timer <= 0:
+                menu = Menu()
+                menu.mainloop()
             
+            p1 = self.pointsMarker.render("Score: " + str(round(self.score)), True, (255, 255, 255))
+            self.screen.blit(p1, (10, 20))
             img1 = pg.transform.rotate(self.img , angle) 
             rect1 = img1.get_rect()
             rect1.center = (self.center_x, self.center_y)

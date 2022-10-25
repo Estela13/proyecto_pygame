@@ -21,8 +21,8 @@ class Game:
         self.lives = 3
         self.x = 0
         self.y = 0
-        self.livesMarker = pg.image.load("the_quest/images/heart.png")
-        self.warning = pg.transform.scale(pg.image.load("the_quest/images/virus warning.png"), (35,35))
+        self.livesMarker = pg.transform.scale(pg.image.load("the_quest/images/healthfull.png"), (35,35))
+        self.warning = pg.transform.scale(pg.image.load("the_quest/images/health.png"), (35,35))
         self.timerMarker = pg.font.Font("the_quest/fonts/Silkscreen-Regular.ttf", 20)
         self.pointsMarker = pg.font.Font("the_quest/fonts/Silkscreen-Regular.ttf", 25)
         self.spaceship = Spaceship()
@@ -30,6 +30,7 @@ class Game:
         self.end_music = pg.mixer.Sound("the_quest/sound/01 game-game_0.ogg")
         self.music = pg.mixer.Sound("the_quest/sound/SFX_Explosion_02.wav")
         self.explosion_group = pg.sprite.Group() 
+    
       
 
     def mainloop(self, level):
@@ -90,16 +91,16 @@ class Game:
                         self.spaceship.remove()
                         self.spaceship = Spaceship()
       
-                    if self.lives == 2 or self.lives == 1:
-                        if self.level == 1:
-                            asteroid = Asteroids(random.randint(1,2))
-                        elif self.level == 2:
-                            asteroid = Asteroids(random.randint(1,3))
-                        asteroid.speed(random.randint(5,8))
-                        self.asteroids.append(asteroid)
+                        if self.lives == 2 or self.lives == 1:
+                            if self.level == 1:
+                                asteroid = Asteroids(random.randint(1,2))
+                            elif self.level == 2:
+                                asteroid = Asteroids(random.randint(1,3))
+                            asteroid.speed(random.randint(5,8))
+                            self.asteroids.append(asteroid)
                     if self.lives == 0:
                         if level == 1:
-                            gameover = Game_over(1, self.asteroidsCount)
+                            gameover = Game_over(1)
                         if level == 2:
                             gameover = Game_over(2)
                         gameover.mainloop()
@@ -121,15 +122,18 @@ class Game:
             self.spaceship.move(pg.K_UP, pg.K_DOWN)
             self.explosion_group.draw(self.main_screen)
             self.explosion_group.update()
-
-            self.main_screen.blit(self.livesMarker, (670,25))
-            self.main_screen.blit(self.livesMarker, (700,25))
-            self.main_screen.blit(self.livesMarker, (730, 25))
+            if self.lives == 3:
+                self.main_screen.blit(self.livesMarker, (675,35))
+                self.main_screen.blit(self.livesMarker, (705,35))
+                self.main_screen.blit(self.livesMarker, (735, 35))
             if self.lives == 2:
-                self.main_screen.blit(self.warning, (678,33))
+                self.health = self.main_screen.blit(self.warning, (675,35))
+                self.main_screen.blit(self.livesMarker, (705,35))
+                self.main_screen.blit(self.livesMarker, (735, 35))
             if self.lives == 1:
-                self.main_screen.blit(self.warning, (678,33))
-                self.main_screen.blit(self.warning, (708,33))
+                self.main_screen.blit(self.warning, (675,35))
+                self.main_screen.blit(self.warning, (705,34))
+                self.main_screen.blit(self.livesMarker, (735, 35))
             t1 = self.timerMarker.render(str(round(self.timer / 1000, 2)), True, (255, 255, 0))
             p1 = self.pointsMarker.render("Score: " + str(round(self.asteroidsCount)), True, (255, 255, 255))
             self.main_screen.blit(t1, (720,8))

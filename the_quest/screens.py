@@ -35,11 +35,11 @@ class Game:
         self.playersGroup.add(self.spaceship)
         self.player2Group = pg.sprite.Group()
 
-    def mainloop(self, level, score):
+    def mainloop(self, level):
         self.FPS = 50
         self.asteroids = []
         self.level = level
-        self.asteroidsCount = score
+        self.asteroidsCount = 0
         self.end_music.set_volume(0.1)
         colliding = True
         
@@ -487,4 +487,3 @@ class Game_over():
             self.main_screen.blit(self.text_continue, (140, 285))
 
             pg.display.flip()
-

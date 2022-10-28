@@ -51,10 +51,10 @@ class Asteroids(pg.sprite.Sprite):
     
     @property
     def down(self):
-        return self.center_y + self.h // 2
+        return self.center_y + self.h // 2 -1
             
 class Spaceship(pg.sprite.Sprite):
-    def __init__(self, center_x=60, vy = 2):
+    def __init__(self, center_x=60, vy = 5):
         pg.sprite.Sprite.__init__(self)
         self.image = pg.transform.scale(pg.image.load("the_quest/images/blueships1.png"),(80,70))
         self.landing = pg.transform.scale(pg.image.load("the_quest/images/blueships1.png"),(60,30))
@@ -109,7 +109,7 @@ class Spaceship(pg.sprite.Sprite):
 
     @property
     def down(self):
-        return (self.center_y + self.h // 2) 
+        return (self.center_y + self.h // 2) - 1
     
 
 class Explosion(pg.sprite.Sprite):

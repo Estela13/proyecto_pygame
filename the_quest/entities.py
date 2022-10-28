@@ -1,12 +1,12 @@
 import random
 import pygame as pg
 from the_quest import y_max, x_max
+import math
 
-NEGRO = (0,0,0)
 
 class Asteroids(pg.sprite.Sprite):
     def __init__(self, size):
-        super().__init__()
+        pg.sprite.Sprite.__init__(self)
         asteroid50 = pg.transform.scale(pg.image.load("the_quest/images/meteorito.png"),(50,50))
         asteroid100 = pg.transform.scale(pg.image.load("the_quest/images/meteorito.png"),(70,70))
         asteroid150 = pg.transform.scale(pg.image.load("the_quest/images/meteorito.png"),(100,100))
@@ -36,11 +36,15 @@ class Asteroids(pg.sprite.Sprite):
 
     def draw(self, screen):
         screen.blit(self.image, (self.center_x, self.center_y))
-        
+
+    @property
+    def right(self):
+        return self.center_x + self.w // 2
+
     @property
     def left(self):
         return self.center_x - self.w // 2
-    
+        
     @property
     def up(self):
         return self.center_y - self.h // 2
@@ -51,11 +55,11 @@ class Asteroids(pg.sprite.Sprite):
             
 class Spaceship(pg.sprite.Sprite):
     def __init__(self, center_x=60, vy = 2):
-        super().__init__()
-        self._image = pg.transform.scale(pg.image.load("the_quest/images/blueships1.png"),(80,70))
+        pg.sprite.Sprite.__init__(self)
+        self.image = pg.transform.scale(pg.image.load("the_quest/images/blueships1.png"),(80,70))
         self.landing = pg.transform.scale(pg.image.load("the_quest/images/blueships1.png"),(60,30))
         self.center_x = center_x
-        self.img = self._image
+        self.img = self.image
         self.flipped = pg.transform.rotate(self.img, 0)
         self.center_y = y_max // 2
         self.vy = vy
@@ -80,7 +84,7 @@ class Spaceship(pg.sprite.Sprite):
             self.center_y += self.vy
         if self.center_y > y_max - self.h // 2:
             self.center_y = y_max - self.h // 2
- 
+
     def draw(self, screen):
         screen.blit(self.img, ((self.center_x - self.w // 2), self.center_y - self.h // 2))
         if self.rotating:
@@ -91,23 +95,21 @@ class Spaceship(pg.sprite.Sprite):
             if self.angle == 180:
                 self.angle = 180
 
-        
-
     @property
     def right(self):
-        return self.center_x + self.w // 2
+        return (self.center_x + self.w // 2)
     
     @property
     def left(self):
-        return self.center_x - self.w // 2
+        return (self.center_x - self.w // 2)
     
     @property
     def up(self):
-        return self.center_y - self.h // 2
+        return (self.center_y - self.h // 2) 
 
     @property
     def down(self):
-        return (self.center_y + self.h // 2) - 50
+        return (self.center_y + self.h // 2) 
     
 
 class Explosion(pg.sprite.Sprite):
@@ -136,4 +138,33 @@ class Explosion(pg.sprite.Sprite):
 		if self.index >= len(self.images) - 1 and self.counter >= explosion_speed:
 			self.kill()
 
+class Button():
+    
+	def __init__(self, image, pos, text_input, font, base_color, hovering_color):
+		self.image = image
+		self.x_pos = pos[0]
+		self.y_pos = pos[1]
+		self.font = font
+		self.base_color, self.hovering_color = base_color, hovering_color
+		self.text_input = text_input
+		self.text = self.font.render(self.text_input, True, self.base_color)
+		if self.image is None:
+			self.image = self.text
+		self.rect = self.image.get_rect(center=(self.x_pos, self.y_pos))
+		self.text_rect = self.text.get_rect(center=(self.x_pos, self.y_pos))
 
+	def update(self, screen):
+		if self.image is not None:
+			screen.blit(self.image, self.rect)
+		screen.blit(self.text, self.text_rect)
+
+	def checkForInput(self, position):
+		if position[0] in range(self.rect.left, self.rect.right) and position[1] in range(self.rect.top, self.rect.bottom):
+			return True
+		return False
+
+	def changeColor(self, position):
+		if position[0] in range(self.rect.left, self.rect.right) and position[1] in range(self.rect.top, self.rect.bottom):
+			self.text = self.font.render(self.text_input, True, self.hovering_color)
+		else:
+			self.text = self.font.render(self.text_input, True, self.base_color)

@@ -15,7 +15,7 @@ class Game():
         self.main_screen = pg.display.set_mode((screen_height, screen_width))
         pg.display.set_caption("THE QUEST") 
         self.background = pg.image.load("the_quest/images/backgroundplanet.jpeg").convert()
-        self.bg2 = pg.image.load("the_quest/images/wp3028472 Edited.jpeg").convert()
+        self.bg2 = pg.image.load("the_quest/images/bg_level2.jpeg").convert()
         self.background_width = self.background.get_width()
         self.clock = pg.time.Clock()
         self.timer = Max_time_game
@@ -84,11 +84,8 @@ class Game():
                 else:
                     asteroid.draw(self.main_screen)
 
-                if asteroid.right >= self.spaceship.left and \
-                asteroid.left<= self.spaceship.right and \
-                asteroid.down >= self.spaceship.up and \
-                asteroid.up <= self.spaceship.down:
-                #if asteroid.left <= self.spaceship.right and asteroid.down >= self.spaceship.up and asteroid.up <= self.spaceship.down and asteroid.left >= self.spaceship.left:
+                if asteroid.right >= self.spaceship.left and asteroid.left<= self.spaceship.right and \
+                asteroid.down >= self.spaceship.up and asteroid.up <= self.spaceship.down:
                     if colliding:
                         self.music.play()
                         self.music.set_volume(0.2)
@@ -321,7 +318,7 @@ class End():
         self.score = score
         self.img =  pg.transform.scale(pg.image.load("the_quest/images/blueships1.png"),(80,70))
         self.background = pg.image.load("the_quest/images/backgroundplanet.jpeg").convert()
-        self.bg2 = pg.image.load("the_quest/images/wp3028472 Edited.jpeg").convert()
+        self.bg2 = pg.image.load("the_quest/images/bg_level2.jpeg").convert()
         self.x = 0
         self.rect0 = self.img.get_rect()
         self.center_x = 60

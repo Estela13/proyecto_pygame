@@ -43,7 +43,7 @@ class Asteroids(pg.sprite.Sprite):
 
     @property
     def left(self):
-        return self.center_x - self.w // 2
+        return self.center_x - self.w // 2 
         
     @property
     def up(self):
@@ -51,7 +51,7 @@ class Asteroids(pg.sprite.Sprite):
     
     @property
     def down(self):
-        return self.center_y + self.h // 2 -1
+        return self.center_y + self.h // 2
             
 class Spaceship(pg.sprite.Sprite):
     def __init__(self, center_x=60, vy = 5):
@@ -97,7 +97,7 @@ class Spaceship(pg.sprite.Sprite):
 
     @property
     def right(self):
-        return (self.center_x + self.w // 2)
+        return (self.center_x + self.w // 2) 
     
     @property
     def left(self):
@@ -105,11 +105,11 @@ class Spaceship(pg.sprite.Sprite):
     
     @property
     def up(self):
-        return (self.center_y - self.h // 2) 
+        return (self.center_y - self.h // 2) - 25
 
     @property
     def down(self):
-        return (self.center_y + self.h // 2) - 1
+        return (self.center_y + self.h // 2) 
     
 
 class Explosion(pg.sprite.Sprite):

@@ -10,7 +10,7 @@ import pygame_gui
 
 
 pg.init()
-class Game:
+class Game():
     def __init__(self):
         self.main_screen = pg.display.set_mode((screen_height, screen_width))
         pg.display.set_caption("THE QUEST") 
@@ -35,11 +35,11 @@ class Game:
         self.playersGroup.add(self.spaceship)
         self.player2Group = pg.sprite.Group()
 
-    def mainloop(self, level):
+    def mainloop(self, level, score):
         self.FPS = 50
         self.asteroids = []
         self.level = level
-        self.asteroidsCount = 0
+        self.asteroidsCount = score
         self.end_music.set_volume(0.1)
         colliding = True
         
@@ -84,7 +84,11 @@ class Game:
                 else:
                     asteroid.draw(self.main_screen)
 
-                if asteroid.left <= self.spaceship.right and asteroid.down >= self.spaceship.up and asteroid.up <= self.spaceship.down and asteroid.left >= self.spaceship.left:
+                if asteroid.right >= self.spaceship.left and \
+                asteroid.left<= self.spaceship.right and \
+                asteroid.down >= self.spaceship.up and \
+                asteroid.up <= self.spaceship.down:
+                #if asteroid.left <= self.spaceship.right and asteroid.down >= self.spaceship.up and asteroid.up <= self.spaceship.down and asteroid.left >= self.spaceship.left:
                     if colliding:
                         self.music.play()
                         self.music.set_volume(0.2)
@@ -147,7 +151,7 @@ class Game:
         pg.quit()
 
 
-class Menu:
+class Menu():
     def __init__(self):
         self.main_screen = pg.display.set_mode((screen_height, screen_width))
         pg.display.set_caption("MENU")
@@ -203,7 +207,7 @@ class Menu:
       
 
 
-class Records:
+class Records():
     def __init__(self):
         self.main_screen = pg.display.set_mode((screen_height, screen_width))
         pg.display.set_caption("RECORDS")
@@ -248,7 +252,7 @@ class Records:
 
             pg.display.flip()
     
-class Instructions:
+class Instructions():
     def __init__(self):
         self.main_screen = pg.display.set_mode((screen_height, screen_width))
         pg.display.set_caption("INSTRUCTIONS")
@@ -413,11 +417,17 @@ class End():
                 if self.center_x >= 395:
                     self.center_x = 395
                     p4 = self.text1.render("YOU'VE WON!", True, (255, 255, 255))
+                    p5 = self.text1.render("PRESS ENTER TO PLAY AGAIN", True, (255, 255, 0))
+                    if event.type == pg.KEYDOWN:
+                        if event.key == pg.K_RETURN:
+                            game = Game()
+                            game.mainloop(1, 0)
                     self.best_score()
                     if self.is_best_3 == True:
                         p3 = self.text1.render("PRESS ENTER TO RECORDS SCREEN", True, (255, 255, 0))
                         self.screen.blit(p3, (80, 500))
                     self.screen.blit(p4, (270, 200))
+                    self.screen.blit(p5, (100, 500))
                     if event.type == pg.KEYDOWN:
                         if event.key == pg.K_RETURN:
                             name = self.get_user_name()
@@ -478,7 +488,6 @@ class Game_over():
                 if event.type == pg.KEYDOWN:
                     if event.key == pg.K_RETURN:
                         self.music_gv.stop()
-                    
                         game = Game()
                         game.mainloop(1, 0)
                         

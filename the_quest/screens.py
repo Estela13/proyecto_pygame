@@ -16,6 +16,7 @@ class Game():
         pg.display.set_caption("THE QUEST") 
         self.background = pg.image.load("the_quest/images/backgroundplanet.jpeg").convert()
         self.bg2 = pg.image.load("the_quest/images/bg_level2.jpeg").convert()
+        self.bg3 = pg.image.load("the_quest/images/bg_level3.jpeg").convert()
         self.background_width = self.background.get_width()
         self.clock = pg.time.Clock()
         self.timer = Max_time_game
@@ -26,7 +27,7 @@ class Game():
         self.warning = pg.transform.scale(pg.image.load("the_quest/images/health.png"), (35,35))
         self.timerMarker = pg.font.Font("the_quest/fonts/Silkscreen-Regular.ttf", 20)
         self.pointsMarker = pg.font.Font("the_quest/fonts/Silkscreen-Regular.ttf", 25)
-        self.spaceship = Spaceship(vy = 7)
+        self.spaceship = Spaceship()
         self.game_over = False
         self.end_music = pg.mixer.Sound("the_quest/sound/01 game-game_0.ogg")
         self.music = pg.mixer.Sound("the_quest/sound/SFX_Explosion_02.wav")
@@ -45,9 +46,9 @@ class Game():
         
         if self.level == 1:
             self.asteroidsCount = 0
-            for i in range(5):
+            for i in range(7):
                 asteroid = Asteroids(random.randint(1,2))
-                asteroid.speed(random.randint(3,6))
+                asteroid.speed(random.randint(2,4))
                 self.asteroids.append(asteroid)
                 self.playersGroup.add(asteroid)
                 i += 1
@@ -56,9 +57,17 @@ class Game():
                     break
         elif self.level == 2:
             self.background = self.bg2
-            for i in range(4):
+            for i in range(7):
                 asteroid = Asteroids(random.randint(1,3))
-                asteroid.speed(random.randint(5,8))
+                asteroid.speed(random.randint(3,6))
+                self.playersGroup.add(asteroid)
+                self.asteroids.append(asteroid)
+                i += 1
+        elif self.level == 3:
+            self.background = self.bg3
+            for i in range(6):
+                asteroid = Asteroids(random.randint(2,4))
+                asteroid.speed(random.randint(5,7))
                 self.playersGroup.add(asteroid)
                 self.asteroids.append(asteroid)
                 i += 1
@@ -72,9 +81,9 @@ class Game():
                 if event.type == pg.QUIT:
                     pg.quit()
                     sys.exit()
-        
+            
             self.main_screen.blit(self.background, (self.x, self.y))
-    
+            
             for asteroid in self.asteroids:
                 if colliding:
                     asteroid.update()
@@ -95,16 +104,17 @@ class Game():
                         self.explosion_group.add(self.explosion)
                         self.spaceship.remove()
                         self.spaceship = Spaceship()
-    
+
                         if self.lives == 2 or self.lives == 1:
                             if self.level == 1:
                                 asteroid = Asteroids(random.randint(1,2))
                             elif self.level == 2:
-                                asteroid = Asteroids(random.randint(1,3))
+                                asteroid = Asteroids(random.randint(1,2))
+                            elif self.level == 3:
+                                asteroid = Asteroids(random.randint(2,3))
                             asteroid.speed(random.randint(5,8))
                             self.asteroids.append(asteroid)
                     
-
                 if self.timer <= 0:
                     colliding = False
                     self.spaceship.center_y = 300
@@ -117,6 +127,8 @@ class Game():
                             end.mainloop(1)
                         if level == 2:
                             end.mainloop(2)
+                        if level == 3:
+                            end.mainloop(3)
                        
                 if self.lives == 0:
                     gameover = Game_over()
@@ -124,6 +136,11 @@ class Game():
 
             self.spaceship.draw(self.main_screen)
             self.spaceship.move(pg.K_UP, pg.K_DOWN)
+            if event.type == pg.KEYDOWN:
+                self.spaceship.vy += 1
+            if event.type == pg.KEYUP:
+                self.spaceship.vy = 1
+        
             self.explosion_group.draw(self.main_screen)
             self.explosion_group.update()
             if self.lives == 3:
@@ -153,7 +170,7 @@ class Menu():
         self.main_screen = pg.display.set_mode((screen_height, screen_width))
         pg.display.set_caption("MENU")
         self.clock = pg.time.Clock()
-        self.background = pg.transform.scale(pg.image.load("the_quest/images/bg2.webp"),(800,600))
+        self.background = pg.transform.scale(pg.image.load("the_quest/images/menu_bg.webp"),(800,600)).convert()
         self.titleFont= pg.font.Font("the_quest/fonts/SpecialElite-Regular.ttf", 100)
         self.menuFont = pg.font.Font("the_quest/fonts/SpecialElite-Regular.ttf", 55)
         self.startFont =  pg.font.Font("the_quest/fonts/BlackAndWhitePicture-Regular.ttf", 40)
@@ -202,7 +219,6 @@ class Menu():
 
             pg.display.update()
       
-
 
 class Records():
     def __init__(self):
@@ -260,6 +276,7 @@ class Instructions():
         self.rect = pg.transform.scale(pg.image.load("the_quest/images/Rect.png"),(700,300))
         self.textFont = pg.font.Font("the_quest/fonts/PTSans-Regular.ttf", 17)
         self.music = pg.mixer.Sound("the_quest/sound/00 intro_0.ogg")
+        
     def mainloop(self):
         game_over = False
         pg.font.init()
@@ -285,8 +302,10 @@ class Instructions():
             text_instru3 = self.textFont.render("You have to survive 30 seconds on each level without losing your 3 lives.", True, (255,255,255))
             text_instru4 = self.textFont.render("To move your spaceship you'll use the key arrow UP and DOWN.", True, (255,255,255))
             text_instru5 = self.textFont.render("The more asteroids you pass without colliding the bigger score you'll get.", True, (255,255,255))
-            text_instru6 = self.textFont.render("At the end of the level you will land in a new planet you've discovered.", True, (255,255,255))
+            text_instru6 = self.textFont.render("At the end of the level you will land in a new planet and you'll get 15 extra points for it.", True, (255,255,255))
             text_instru7 = self.textFont.render("If you lose your 3 lives it will be GAME OVER. ", True, (255,255,255))
+            text_instru8 = self.textFont.render("If it's GAME OVER, you'll have to start from the first level.", True, (255,255,255))
+
 
             for event in pg.event.get():
                 if event.type == pg.QUIT:
@@ -308,17 +327,19 @@ class Instructions():
             self.main_screen.blit(text_instru4, (70, 320))
             self.main_screen.blit(text_instru5, (70, 350))
             self.main_screen.blit(text_instru6, (70, 380))
-            self.main_screen.blit(text_instru7, (70, 410))           
+            self.main_screen.blit(text_instru7, (70, 410))
+            self.main_screen.blit(text_instru8, (70, 440))            
             pg.display.flip()
     
 class End():
     def __init__(self, score):
         self.screen = pg.display.set_mode((800 , 600)) 
         pg.display.set_caption("LEVEL END") 
-        self.score = score
+        self.score = score + 15
         self.img =  pg.transform.scale(pg.image.load("the_quest/images/blueships1.png"),(80,70))
         self.background = pg.image.load("the_quest/images/backgroundplanet.jpeg").convert()
         self.bg2 = pg.image.load("the_quest/images/bg_level2.jpeg").convert()
+        self.bg3 = pg.image.load("the_quest/images/bg_level3.jpeg").convert()
         self.x = 0
         self.rect0 = self.img.get_rect()
         self.center_x = 60
@@ -356,7 +377,7 @@ class End():
     def get_user_name(self):
         self.screen = pg.display.set_mode((screen_height, screen_width))
         pg.display.set_caption("Insert name")
-        background = pg.image.load("the_quest/images/wp3028472 Edited.jpeg")
+        background = pg.image.load("the_quest/images/bg_level3.jpeg")
         font = pg.font.Font("the_quest/fonts/Silkscreen-Regular.ttf", 15)
 
         manager = pygame_gui.UIManager((screen_height, screen_width))
@@ -379,7 +400,7 @@ class End():
                 manager.process_events(event)
             
             manager.update(refresh_rate)
-            self.screen.blit(background, (-500,0))
+            self.screen.blit(background, (-500, 0))
             f = font.render("Introduce your name if you want to save your score: ", True, (255, 255, 255))
             self.screen.blit(f, (150, 170))
             manager.draw_ui(self.screen)
@@ -409,30 +430,42 @@ class End():
                         if event.key == pg.K_RETURN:
                             gameagain = Game()
                             gameagain.mainloop(2, self.score)
-            if level == 2:
+            elif level == 2:
                 self.screen.blit(self.bg2, (self.x, 0))
+                if self.center_x >= 550:
+                    self.center_x = 550
+                    p2 = self.text1.render("PRESS ENTER TO NEXT LEVEL", True, (255, 255, 0))
+                    self.screen.blit(p2, (110, 525))
+                    
+                    if event.type == pg.KEYDOWN:
+                        if event.key == pg.K_RETURN:
+                            gameagain = Game()
+                            gameagain.mainloop(3, self.score)
+            elif level == 3:
+                self.screen.blit(self.bg3, (self.x, 0))
                 if self.center_x >= 395:
                     self.center_x = 395
                     p4 = self.text1.render("YOU'VE WON!", True, (255, 255, 255))
-                    p5 = self.text1.render("PRESS ENTER TO PLAY AGAIN", True, (255, 255, 0))
-                    if event.type == pg.KEYDOWN:
-                        if event.key == pg.K_RETURN:
-                            game = Game()
-                            game.mainloop(1, 0)
+                    self.screen.blit(p4, (270, 200))
                     self.best_score()
                     if self.is_best_3 == True:
                         p3 = self.text1.render("PRESS ENTER TO RECORDS SCREEN", True, (255, 255, 0))
                         self.screen.blit(p3, (80, 500))
-                    self.screen.blit(p4, (270, 200))
-                    self.screen.blit(p5, (100, 500))
-                    if event.type == pg.KEYDOWN:
-                        if event.key == pg.K_RETURN:
-                            name = self.get_user_name()
-                            if name != "":
-                                self.insert(name, self.score)
-                                record = Records()
-                                record.mainloop()
-            
+                        if event.type == pg.KEYDOWN:
+                            if event.key == pg.K_RETURN:
+                                name = self.get_user_name()
+                                if name != "":
+                                    self.insert(name, self.score)
+                                    record = Records()
+                                    record.mainloop()
+                    else:
+                        p5 = self.text1.render("PRESS ENTER TO PLAY AGAIN", True, (255, 255, 0))
+                        self.screen.blit(p5, (100, 500))
+                        if event.type == pg.KEYDOWN:
+                            if event.key == pg.K_RETURN:
+                                game = Game()
+                                game.mainloop(1, 0)                 
+                
             self.x -= 1
             if self.x <= -500:
                 self.x = -500  
@@ -458,9 +491,7 @@ class End():
             rect1.center = (self.center_x, self.center_y)
             self.screen.blit(img1 ,rect1)
             
-
             pg.display.flip()
-
 
 
 class Game_over():    
@@ -490,6 +521,6 @@ class Game_over():
                         
             self.main_screen.blit(self.game_over_bg, (0,0))
             self.text_continue = self.game__over.render("Press ENTER to play again", True, (255, 255, 0))
-            self.main_screen.blit(self.text_continue, (140, 285))
+            self.main_screen.blit(self.text_continue, (130, 285))
 
             pg.display.flip()

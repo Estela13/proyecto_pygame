@@ -1,19 +1,20 @@
 import random
 import pygame as pg
 from the_quest import y_max, x_max
-import math
-
 
 class Asteroids(pg.sprite.Sprite):
     def __init__(self, size):
         pg.sprite.Sprite.__init__(self)
         asteroid50 = pg.transform.scale(pg.image.load("the_quest/images/meteorito.png"),(50,50))
-        asteroid100 = pg.transform.scale(pg.image.load("the_quest/images/meteorito.png"),(70,70))
-        asteroid150 = pg.transform.scale(pg.image.load("the_quest/images/meteorito.png"),(100,100))
+        asteroid70 = pg.transform.scale(pg.image.load("the_quest/images/meteorito.png"),(70,70))
+        asteroid100 = pg.transform.scale(pg.image.load("the_quest/images/meteorito.png"),(100,100))
+        asteroid150 = pg.transform.scale(pg.image.load("the_quest/images/meteorito.png"), (150, 150))
         self.size = size
         if self.size == 1:
             self.image = asteroid50
         elif self.size == 2:
+            self.image = asteroid70
+        elif self.size == 3:
             self.image = asteroid100
         else:
             self.image = asteroid150
@@ -30,7 +31,7 @@ class Asteroids(pg.sprite.Sprite):
     def update(self):
         self.center_x += self.vx
         if self.center_x < 0 - self.w:
-            for a in range(5):
+            for a in range(7):
                 self.center_x = random.randint(x_max, x_max + 30)
                 self.center_y = random.randrange(y_max - self.w)
 
@@ -54,7 +55,7 @@ class Asteroids(pg.sprite.Sprite):
         return self.center_y + self.h // 2
             
 class Spaceship(pg.sprite.Sprite):
-    def __init__(self, center_x=60, vy = 5):
+    def __init__(self, center_x=60, vy = 1):
         pg.sprite.Sprite.__init__(self)
         self.image = pg.transform.scale(pg.image.load("the_quest/images/blueships1.png"),(80,70))
         self.landing = pg.transform.scale(pg.image.load("the_quest/images/blueships1.png"),(60,30))
@@ -70,8 +71,6 @@ class Spaceship(pg.sprite.Sprite):
         self.rect = self.img.get_rect()
         self.rect_center = (self.w // 2, self.h // 2)
         self.rotating = False
-       
-
 
     def move(self, key_up, key_down):
         key_state = pg.key.get_pressed()
@@ -109,7 +108,7 @@ class Spaceship(pg.sprite.Sprite):
 
     @property
     def down(self):
-        return (self.center_y + self.h // 2) 
+        return (self.center_y + self.h // 2) - 25
     
 
 class Explosion(pg.sprite.Sprite):

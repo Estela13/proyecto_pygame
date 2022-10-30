@@ -34,8 +34,8 @@ The aim of this game is to conquer new planets, for that you need to avoid all t
 
 The player will be displayed as a spaceship. By using Arrow Up and Arrow Down from your keyboard to control the movement of the spaceship.
 
-The limited number player's life is 3. After 3 lives are used up, it will be game over. If you are in the second level, you will have to start from the beggining.
+The limited number player's life is 3 in each level. After 3 lives are used up, it will be game over. If you are in the second or third level, you will have to start from the beggining.
 
-There are 2 levels. Their appearences and asteroids amount, speed, and size will be different.
+There are 3 levels. Their appearences and asteroids amount, speed, and size will be different.
 
 The 3 bests scores can be recorded in the game system by using SQL method. You can only access to the records screen if your score if one of the best 3. In this case you can enter your name to save your score.

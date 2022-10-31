@@ -35,7 +35,9 @@ The aim of this game is to conquer new planets, for that you need to avoid all t
 
 The player will be displayed as a spaceship. By using Arrow Up and Arrow Down from your keyboard to control the movement of the spaceship.
 
-The limited number player's life is 3 in each level. After 3 lives are used up, it will be game over. If you are in the second or third level, you will have to start from the beggining.
+You can choose the difficulty of the game: easy, medium, difficult.
+
+The limited number player's life is 3 in each level. After 3 lives are used up, it will be game over. If you are in the second or third level, you will have to start from the beggining. After you loose you get to choose again the difficulty of the game.
 
 There are 3 levels. Their appearences and asteroids amount, speed, and size will be different.
 

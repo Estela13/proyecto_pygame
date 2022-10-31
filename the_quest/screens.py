@@ -35,19 +35,28 @@ class Game():
         self.playersGroup.add(self.spaceship)
         self.player2Group = pg.sprite.Group()
 
-    def mainloop(self, level, score):
+    def mainloop(self, level, score, difficulty):
         self.FPS = 50
         self.asteroids = []
         self.level = level
         self.asteroidsCount = score
         self.end_music.set_volume(0.1)
+        self.difficulty = difficulty
         colliding = True
+        
         
         if self.level == 1:
             self.asteroidsCount = 0
             for i in range(7):
-                asteroid = Asteroids(random.randint(1,2))
-                asteroid.speed(random.randint(2,4))
+                if difficulty == 1:
+                    asteroid = Asteroids(random.randint(1,2))
+                    asteroid.speed(random.randint(1,3))
+                elif difficulty == 2:
+                    asteroid = Asteroids(random.randint(1,2))
+                    asteroid.speed(random.randint(3,4))
+                else:
+                    asteroid = Asteroids(random.randint(1,2))
+                    asteroid.speed(random.randint(4,7))
                 self.asteroids.append(asteroid)
                 self.playersGroup.add(asteroid)
                 i += 1
@@ -57,16 +66,30 @@ class Game():
         elif self.level == 2:
             self.background = self.bg2
             for i in range(7):
-                asteroid = Asteroids(random.randint(1,3))
-                asteroid.speed(random.randint(3,6))
+                if difficulty == 1:
+                    asteroid = Asteroids(random.randint(1,3))
+                    asteroid.speed(random.randint(2,5))
+                if difficulty == 2:
+                    asteroid = Asteroids(random.randint(1,3))
+                    asteroid.speed(random.randint(3,6))
+                if difficulty == 3:
+                    asteroid = Asteroids(random.randint(1,3))
+                    asteroid.speed(random.randint(5,8))
                 self.playersGroup.add(asteroid)
                 self.asteroids.append(asteroid)
                 i += 1
         elif self.level == 3:
             self.background = self.bg3
             for i in range(5):
-                asteroid = Asteroids(random.randint(2,4))
-                asteroid.speed(random.randint(5,7))
+                if difficulty == 1:
+                    asteroid = Asteroids(random.randint(2,4))
+                    asteroid.speed(random.randint(3,6))
+                if difficulty == 2:
+                    asteroid = Asteroids(random.randint(2,4))
+                    asteroid.speed(random.randint(5,8))
+                if difficulty == 3:
+                    asteroid = Asteroids(random.randint(2,4))
+                    asteroid.speed(random.randint(6,10))
                 self.playersGroup.add(asteroid)
                 self.asteroids.append(asteroid)
                 i += 1
@@ -117,19 +140,19 @@ class Game():
                 if self.timer <= 0:
                     colliding = False
                     self.spaceship.center_y = 300
-                    asteroid.center_x += -15
+                    asteroid.center_x += -17
                     self.timer = 0
                     self.x -= 0.10
                     if level == 2:
                         if self.x <= -33:
                             end = End(self.asteroidsCount)
-                            end.mainloop(2)
+                            end.mainloop(2, self.difficulty)
                     elif self.x <= -50:
                         end = End(self.asteroidsCount)
                         if level == 1:
-                            end.mainloop(1)
+                            end.mainloop(1, self.difficulty)
                         if level == 3:
-                            end.mainloop(3)
+                            end.mainloop(3, self.difficulty)
                        
                 if self.lives == 0:
                     gameover = Game_over()
@@ -208,8 +231,8 @@ class Menu():
                 if event.type == pg.MOUSEBUTTONDOWN:
                     self.music.stop()
                     if play_button.checkForInput(menu_mouse):
-                        game = Game()
-                        game.mainloop(1, 0)
+                        game = Difficulty()
+                        game.mainloop()
                     if instrutions_button.checkForInput(menu_mouse):
                         intro = Instructions()
                         intro.mainloop()
@@ -219,7 +242,56 @@ class Menu():
 
             pg.display.update()
       
+class Difficulty():
+    def __init__(self):
+        self.main_screen = pg.display.set_mode((x_max, y_max))
+        pg.display.set_caption("Choose difficulty")
+        self.clock = pg.time.Clock()
+        self.background = pg.transform.scale(pg.image.load("the_quest/images/menu_bg.webp"),(800,600)).convert()
+        self.menuFont = pg.font.Font("the_quest/fonts/SpecialElite-Regular.ttf", 55)
+        self.startFont =  pg.font.Font("the_quest/fonts/SpecialElite-Regular.ttf", 20)
+        self.music = pg.mixer.Sound("the_quest/sound/00 intro_0.ogg")
+        
+    def mainloop(self):
+        game_over = False
+       
+        while not game_over:
+            self.music.play(-1)
+            self.music.set_volume(0.1)
+            self.main_screen.blit(self.background, (0,0))
+            menu_mouse = pg.mouse.get_pos()
+            menu_text = self.menuFont.render("HOW GAMER ARE YOU?", True, "#DEB887")
+            menu_rect = menu_text.get_rect(center=(395, 150))
+            easy_button = Button(pg.transform.scale(pg.image.load("the_quest/images/Rect.png"),(230,70)), pos=(400, 250), 
+                            text_input="NOT A GAMER", font=self.startFont, base_color="#b68f40", hovering_color="White")
+            medium_button = Button(pg.transform.scale(pg.image.load("the_quest/images/Rect.png"),(270,70)), pos=(400, 340), 
+                            text_input="KIND OF A GAMER", font=self.startFont, base_color="#b68f40", hovering_color="White")
+            difficult_button = Button(pg.transform.scale(pg.image.load("the_quest/images/Rect.png"),(290,70)), pos=(400, 430), 
+                            text_input="MORE GAMER THAN U", font=self.startFont, base_color="#b68f40", hovering_color="White")
 
+            self.main_screen.blit(menu_text, menu_rect)
+            for button in [easy_button, medium_button, difficult_button]:
+                button.changeColor(menu_mouse)
+                button.update(self.main_screen)
+
+        
+            for event in pg.event.get():
+                if event.type == pg.QUIT:
+                    pg.quit()
+                    sys.exit()
+                if event.type == pg.MOUSEBUTTONDOWN:
+                    self.music.stop()
+                    if easy_button.checkForInput(menu_mouse):
+                        game = Game()
+                        game.mainloop(1, 0, 1)
+                    if medium_button.checkForInput(menu_mouse):
+                        game = Game()
+                        game.mainloop(1, 0, 2)
+                    if difficult_button.checkForInput(menu_mouse):
+                        game = Game()
+                        game.mainloop(1, 0, 3)
+
+            pg.display.update()
 class Records():
     def __init__(self):
         self.main_screen = pg.display.set_mode((x_max, y_max))
@@ -303,7 +375,7 @@ class Instructions():
             text_instru6 = self.textFont.render("At the end of the level you will land in a new planet and you'll get 15 extra points for it.", True, (255,255,255))
             text_instru7 = self.textFont.render("If you lose your 3 lives it will be GAME OVER. ", True, (255,255,255))
             text_instru8 = self.textFont.render("If it's GAME OVER, you'll have to start from the first level.", True, (255,255,255))
-
+            text_instru9 = self.textFont.render("You can choose the difficulty of the game everytime you start.", True, (255,255,255))
 
             for event in pg.event.get():
                 if event.type == pg.QUIT:
@@ -315,10 +387,10 @@ class Instructions():
                         menu = Menu()
                         menu.mainloop()
                     if play_button.checkForInput(menu_mouse):
-                        game = Game()
-                        game.mainloop(1, 0)
+                        game = Difficulty()
+                        game.mainloop()
             self.main_screen.blit(text, text_rect)
-            self.main_screen.blit(self.rect, (50,200))
+            self.main_screen.blit(self.rect, (50,215))
             self.main_screen.blit(text_instru, (70, 230))
             self.main_screen.blit(text_instru2, (70, 260))
             self.main_screen.blit(text_instru3, (70, 290))
@@ -326,7 +398,8 @@ class Instructions():
             self.main_screen.blit(text_instru5, (70, 350))
             self.main_screen.blit(text_instru6, (70, 380))
             self.main_screen.blit(text_instru7, (70, 410))
-            self.main_screen.blit(text_instru8, (70, 440))            
+            self.main_screen.blit(text_instru8, (70, 440))
+            self.main_screen.blit(text_instru9, (70, 470))             
             pg.display.flip()
     
 class End():
@@ -402,12 +475,13 @@ class End():
 
             pg.display.update()
 
-    def mainloop(self, level):
+    def mainloop(self, level, difficulty):
         clock = pg.time.Clock() 
         runing = True
         angle = 0
         run = True
         self.level = level
+        self.difficulty = difficulty
             
         while run:
             screen_time = clock.tick(50)
@@ -422,7 +496,7 @@ class End():
                     if event.type == pg.KEYDOWN:
                         if event.key == pg.K_RETURN:
                             gameagain = Game()
-                            gameagain.mainloop(2, self.score)
+                            gameagain.mainloop(2, self.score, self.difficulty)
             elif level == 2:
                 self.screen.blit(self.bg2, (self.x, 0))
                 if self.center_x >= 550:
@@ -433,7 +507,7 @@ class End():
                     if event.type == pg.KEYDOWN:
                         if event.key == pg.K_RETURN:
                             gameagain = Game()
-                            gameagain.mainloop(3, self.score)
+                            gameagain.mainloop(3, self.score, self.difficulty)
             elif level == 3:
                 self.screen.blit(self.bg3, (self.x, 0))
                 if self.center_x >= 395:
@@ -457,7 +531,7 @@ class End():
                         if event.type == pg.KEYDOWN:
                             if event.key == pg.K_RETURN:
                                 game = Game()
-                                game.mainloop(1, 0)                 
+                                game.mainloop(1, 0, self.difficulty)                 
                 
             self.x -= 1
             if self.x <= -500:
@@ -467,6 +541,7 @@ class End():
             for event in pg.event.get():  
                 if event.type == pg.QUIT:  
                     pg.quit()
+                    sys.exit()
                
             if runing:        
                 angle += 1
@@ -506,11 +581,12 @@ class Game_over():
             for event in pg.event.get():
                 if event.type == pg.QUIT:
                     pg.quit()
+                    sys.exit()
                 if event.type == pg.KEYDOWN:
                     if event.key == pg.K_RETURN:
                         self.music_gv.stop()
-                        game = Game()
-                        game.mainloop(1, 0)
+                        game = Difficulty()
+                        game.mainloop()
                         
             self.main_screen.blit(self.game_over_bg, (0,0))
             self.text_continue = self.game__over.render("Press ENTER to play again", True, (255, 255, 0))

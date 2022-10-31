@@ -3,7 +3,5 @@ pg.init()
 x_max = 800
 y_max = 600
 Max_time_game = 30000
-Max_time_screen = 40000
-screen_height = 800
-screen_width = 600
+Max_time_screen = 60000
 

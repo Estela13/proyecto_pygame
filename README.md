@@ -1,13 +1,14 @@
 
 # THE QUEST
 
-The search begins since planet Earth is dying due to climate change. You'll go on the search of a planets compatible with human life to colonize it.
+The search begins since planet Earth is dying due to climate change. You'll go on the search of a planets compatible with human life to colonize them.
  
 * Simple asteroids game using python/pygame and sqlite.
 
 
 ## Pre-requirements
-Run in either Windows or Mac which a Python environment.
+Run in either Windows or Mac with a Python environment.
+
 ## Installation
 
 Install pygame
@@ -38,4 +39,4 @@ The limited number player's life is 3 in each level. After 3 lives are used up, 
 
 There are 3 levels. Their appearences and asteroids amount, speed, and size will be different.
 
-The 3 bests scores can be recorded in the game system by using SQL method. You can only access to the records screen if your score if one of the best 3. In this case you can enter your name to save your score.
+The 3 bests scores can be recorded in the game system by using SQL method. You can only access to the records screen if your score is one of the best 3. In this case you can enter your name to save your score.

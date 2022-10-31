@@ -1,18 +1,17 @@
 
 import sqlite3
 import pygame as pg
-from the_quest import Max_time_game, Max_time_screen, screen_height, screen_width
+from the_quest import Max_time_game, Max_time_screen, x_max, y_max
 from the_quest.entities import Asteroids, Spaceship, Explosion, Button
 import random
 import sys
 import pygame_gui
 
 
-
 pg.init()
 class Game():
     def __init__(self):
-        self.main_screen = pg.display.set_mode((screen_height, screen_width))
+        self.main_screen = pg.display.set_mode((x_max, y_max))
         pg.display.set_caption("THE QUEST") 
         self.background = pg.image.load("the_quest/images/backgroundplanet.jpeg").convert()
         self.bg2 = pg.image.load("the_quest/images/bg_level2.jpeg").convert()
@@ -65,7 +64,7 @@ class Game():
                 i += 1
         elif self.level == 3:
             self.background = self.bg3
-            for i in range(6):
+            for i in range(5):
                 asteroid = Asteroids(random.randint(2,4))
                 asteroid.speed(random.randint(5,7))
                 self.playersGroup.add(asteroid)
@@ -121,12 +120,14 @@ class Game():
                     asteroid.center_x += -15
                     self.timer = 0
                     self.x -= 0.10
-                    if self.x <= -60:
+                    if level == 2:
+                        if self.x <= -20:
+                            end = End(self.asteroidsCount)
+                            end.mainloop(2)
+                    elif self.x <= -50:
                         end = End(self.asteroidsCount)
                         if level == 1:
                             end.mainloop(1)
-                        if level == 2:
-                            end.mainloop(2)
                         if level == 3:
                             end.mainloop(3)
                        
@@ -164,10 +165,9 @@ class Game():
 
         pg.quit()
 
-
 class Menu():
     def __init__(self):
-        self.main_screen = pg.display.set_mode((screen_height, screen_width))
+        self.main_screen = pg.display.set_mode((x_max, y_max))
         pg.display.set_caption("MENU")
         self.clock = pg.time.Clock()
         self.background = pg.transform.scale(pg.image.load("the_quest/images/menu_bg.webp"),(800,600)).convert()
@@ -222,7 +222,7 @@ class Menu():
 
 class Records():
     def __init__(self):
-        self.main_screen = pg.display.set_mode((screen_height, screen_width))
+        self.main_screen = pg.display.set_mode((x_max, y_max))
         pg.display.set_caption("RECORDS")
         self.clock = pg.time.Clock()
         self.background = pg.image.load("the_quest/images/starbg.png")
@@ -258,8 +258,8 @@ class Records():
             self.main_screen.blit(self.background, (0,0))
             head1 = self.title.render(f'PLAYER', True, (255, 0, 255))
             head2 = self.title.render(f'SCORE', True, (255, 0, 255))
-            self.main_screen.blit(head1, [screen_width / 5, (500 / 4) + 5])
-            self.main_screen.blit(head2, [screen_width / 5 + column_space + 200, (500 / 4) +5])
+            self.main_screen.blit(head1, [y_max / 5, (500 / 4) + 5])
+            self.main_screen.blit(head2, [y_max / 5 + column_space + 200, (500 / 4) +5])
     
             self.show_records()
 
@@ -267,16 +267,16 @@ class Records():
     
 class Instructions():
     def __init__(self):
-        self.main_screen = pg.display.set_mode((screen_height, screen_width))
+        self.main_screen = pg.display.set_mode((x_max, y_max))
         pg.display.set_caption("INSTRUCTIONS")
         self.clock = pg.time.Clock()
-        self.background = pg.transform.scale(pg.image.load("the_quest/images/op2.jpeg"),(800,600))
+        self.background = pg.transform.scale(pg.image.load("the_quest/images/menu_bg.webp"),(800,600)).convert()
         self.startFont =  pg.font.Font("the_quest/fonts/SpecialElite-Regular.ttf", 25)
         self.titleFont =  pg.font.Font("the_quest/fonts/SpecialElite-Regular.ttf", 35)
         self.rect = pg.transform.scale(pg.image.load("the_quest/images/Rect.png"),(700,300))
         self.textFont = pg.font.Font("the_quest/fonts/PTSans-Regular.ttf", 17)
         self.music = pg.mixer.Sound("the_quest/sound/00 intro_0.ogg")
-        
+
     def mainloop(self):
         game_over = False
         pg.font.init()
@@ -285,9 +285,7 @@ class Instructions():
             self.music.play(-1)
             self.music.set_volume(0.1)
             self.main_screen.blit(self.background, (0,0))
-            
             menu_mouse = pg.mouse.get_pos()
-            
             play_button = Button(pg.transform.scale(pg.image.load("the_quest/images/Rect.png"),(100,60)), pos=(200, 100), 
                         text_input="PLAY", font=self.startFont, base_color="#d7fcd4", hovering_color="White")
             back_button = Button(pg.transform.scale(pg.image.load("the_quest/images/Rect.png"),(100,60)), pos=(80, 100), 
@@ -375,16 +373,13 @@ class End():
                 self.is_best_3 = True
 
     def get_user_name(self):
-        self.screen = pg.display.set_mode((screen_height, screen_width))
+        self.screen = pg.display.set_mode((x_max, y_max))
         pg.display.set_caption("Insert name")
         background = pg.image.load("the_quest/images/bg_level3.jpeg")
         font = pg.font.Font("the_quest/fonts/Silkscreen-Regular.ttf", 15)
-
-        manager = pygame_gui.UIManager((screen_height, screen_width))
-
+        manager = pygame_gui.UIManager((x_max, y_max))
         text_input = pygame_gui.elements.UITextEntryLine(relative_rect=pg.Rect((150, 200), (300, 50)), manager=manager,
                                                     object_id='#main_text_entry')
-
         clock = pg.time.Clock()
 
         while True:
@@ -407,7 +402,6 @@ class End():
 
             pg.display.update()
 
-
     def mainloop(self, level):
         clock = pg.time.Clock() 
         runing = True
@@ -418,13 +412,12 @@ class End():
         while run:
             screen_time = clock.tick(50)
             self.timer -= screen_time
-
             if level == 1:
                 self.screen.blit(self.background, (self.x, 0))
                 if self.center_x >= 500:
                     self.center_x = 500
                     p2 = self.text1.render("PRESS ENTER TO NEXT LEVEL", True, (255, 255, 0))
-                    self.screen.blit(p2, (110, 525))
+                    self.screen.blit(p2, (120, 525))
                     
                     if event.type == pg.KEYDOWN:
                         if event.key == pg.K_RETURN:
@@ -450,7 +443,7 @@ class End():
                     self.best_score()
                     if self.is_best_3 == True:
                         p3 = self.text1.render("PRESS ENTER TO RECORDS SCREEN", True, (255, 255, 0))
-                        self.screen.blit(p3, (80, 500))
+                        self.screen.blit(p3, (75, 500))
                         if event.type == pg.KEYDOWN:
                             if event.key == pg.K_RETURN:
                                 name = self.get_user_name()
@@ -496,7 +489,7 @@ class End():
 
 class Game_over():    
     def __init__(self):
-        self.main_screen = pg.display.set_mode((screen_height, screen_width))
+        self.main_screen = pg.display.set_mode((x_max, y_max))
         pg.display.set_caption("GAME OVER")
         self.game__over = pg.font.Font("the_quest/fonts/SpecialElite-Regular.ttf", 40)  
         self.game_over_bg = pg.transform.scale(pg.image.load("the_quest/images/game_overr.jpeg"),(800,600))

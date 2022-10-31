@@ -121,7 +121,7 @@ class Game():
                     self.timer = 0
                     self.x -= 0.10
                     if level == 2:
-                        if self.x <= -20:
+                        if self.x <= -33:
                             end = End(self.asteroidsCount)
                             end.mainloop(2)
                     elif self.x <= -50:
